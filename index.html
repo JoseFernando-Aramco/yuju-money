@@ -17,28 +17,16 @@
         /* 📱 메인 앱 컨테이너 */
         .app-container { width: 100%; max-width: 450px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(5px); border-radius: 30px; padding: 24px; min-height: 80vh; position: relative; z-index: 10; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 20px 50px rgba(0,0,0,0.04); }
         
-        /* 탭 스타일 */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* 헤더 & 잔액 & 🌟 이서 프로필 */
-        header { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; position: relative; }
-        header h1 { font-size: 24px; color: #FF8585; margin: 0; letter-spacing: -1px; }
+        /* 헤더 스타일 - 사진 제거 후 중앙 정렬 */
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { font-size: 26px; color: #FF8585; margin: 0; letter-spacing: -1px; }
         
-        /* 🌟 이서 사진 스타일 */
-        .profile-img { 
-            width: 45px; 
-            height: 45px; 
-            border-radius: 50%; 
-            border: 3px solid var(--main-pink); 
-            object-fit: cover; 
-            box-shadow: 0 4px 10px rgba(255, 183, 178, 0.3); 
-        }
-
         .balance-card { background: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; border: 2px solid var(--main-pink); box-shadow: 0 8px 15px rgba(255, 183, 178, 0.1); }
         .balance-amount { font-size: 30px; font-weight: 800; color: #FF8585; margin-top: 5px; }
 
-        /* 입력 폼 */
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
         .type-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #EEE; background: white; cursor: pointer; font-weight: 700; font-size: 16px; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
         .type-btn.active.plus { background: var(--soft-blue); border-color: var(--soft-blue); color: #0077A3; }
@@ -50,9 +38,7 @@
         .submit-btn { padding: 15px; border: none; border-radius: 12px; background: #FF8585; color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.1s; -webkit-tap-highlight-color: transparent; }
         .submit-btn:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* 내역 아이템 */
         .history-item { background: white; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-left: 5px solid #EEE; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.3s; position: relative; z-index: 11; }
-        .history-item:active { background-color: #F9F9F9; }
         .item-date { font-size: 11px; color: #AAA; margin-bottom: 4px; }
         .item-name { font-weight: 600; font-size: 16px; color: #444; }
         .item-amount { font-weight: 700; font-size: 16px; }
@@ -62,12 +48,10 @@
         .minus .item-amount { color: #EB5757; }
         .del-btn { background: #F9F9F9; border: none; color: #CCC; margin-left: 12px; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
 
-        /* 통계 디자인 */
         .stat-card { background: white; padding: 22px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #F0F0F0; position: relative; z-index: 11; }
         .stat-title { font-size: 14px; color: #888; margin-bottom: 10px; }
         .stat-val { font-size: 22px; font-weight: 800; color: #444; }
 
-        /* 하단 탭 바 */
         .nav-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 8px; border: 1px solid rgba(0,0,0,0.03); z-index: 100; }
         .nav-item { flex: 1; text-align: center; padding: 12px; color: #BBB; cursor: pointer; font-weight: 700; font-size: 15px; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
         .nav-item.active { color: #FF8585; }
@@ -91,7 +75,6 @@
 <div class="app-container">
     <div id="tab-record" class="tab-content active">
         <header>
-            <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fimgnews.naver.net%2Fimage%2F609%2F2023%2F12%2F21%2F202312211603522110_1_20231221162310196.jpg&type=sc960_832" alt="IVE Leeseo" class="profile-img">
             <h1>📖 유주의 용돈수첩</h1>
         </header>
         
@@ -152,7 +135,7 @@
         document.getElementById('date-input').value = today;
         setType('out');
         render();
-        createPetals(); // 🌸 벚꽃 생성
+        createPetals();
     };
 
     function showTab(tab, el) {
@@ -234,37 +217,25 @@
         document.getElementById('top-cat').innerText = top ? `${top[0]} (${top[1].toLocaleString()}원)` : '아직 기록이 없어요';
     }
 
-    // 🌸 흩날리는 벚꽃잎 생성 JavaScript
     function createPetals() {
         const container = document.getElementById('petal-container');
-        const petalCount = 35; // 개수 조절
+        const petalCount = 35;
 
         for (let i = 0; i < petalCount; i++) {
             const petal = document.createElement('div');
             petal.className = 'petal';
-            
-            // 랜덤 설정
-            const size = Math.random() * 10 + 6 + 'px'; // 6~16px 사이
-            const startPos = Math.random() * 130 - 15; // 화면 좌우 넓게
-            const delay = Math.random() * 15; // 시작 대기 시간 랜덤
-            const duration = Math.random() * 12 + 8; // 8~20초 사이로 다양하게
-            
+            const size = Math.random() * 10 + 6 + 'px';
+            const startPos = Math.random() * 130 - 15;
+            const delay = Math.random() * 15;
+            const duration = Math.random() * 12 + 8;
             petal.style.width = size;
             petal.style.height = size;
             petal.style.left = startPos + 'vw';
             petal.style.animationDelay = delay + 's';
             petal.style.animationDuration = duration + 's';
-            
-            // 입체감 부여: 투명도, 핑크톤 차이, 그리고 흐림 효과(Blur) 랜덤 적용
-            const opacity = Math.random() * 0.5 + 0.5; // 0.5~1.0
-            const hueShift = Math.random() * 20 - 10; // 핑크색 톤을 살짝 다르게
+            const hueShift = Math.random() * 20 - 10;
             petal.style.backgroundColor = `hsl(${355 + hueShift}, 100%, 85%)`;
-            
-            // 30%의 확률로 흐림 효과(멀리 있는 느낌) 적용
-            if (Math.random() < 0.3) {
-                petal.style.filter = 'blur(1.5px)';
-            }
-            
+            if (Math.random() < 0.3) petal.style.filter = 'blur(1.5px)';
             container.appendChild(petal);
         }
     }
