@@ -38,7 +38,6 @@
         header h1 { font-size: 22px; color: #FF8585; margin: 0; }
         header p { font-size: 14px; color: #AAA; margin-top: 5px; }
 
-        /* 잔액 카드 */
         .balance-card {
             background: white;
             padding: 25px;
@@ -48,15 +47,44 @@
             border: 2px solid var(--main-pink);
             box-shadow: 0 8px 15px rgba(255, 183, 178, 0.1);
         }
-        .balance-label { font-size: 15px; color: #888; margin-bottom: 8px; }
         .balance-amount { font-size: 32px; font-weight: 800; color: #FF8585; }
 
-        /* 입력 폼 */
-        .input-section {
+        /* 1단계: 유형 선택 버튼 */
+        .type-selector {
             display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .type-btn {
+            flex: 1;
+            padding: 18px;
+            border-radius: 15px;
+            border: 3px solid transparent;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .type-btn.plus { color: #0077A3; border-color: var(--soft-blue); }
+        .type-btn.minus { color: #A3002E; border-color: var(--main-pink); }
+        .type-btn.active.plus { background: var(--soft-blue); color: #0077A3; }
+        .type-btn.active.minus { background: var(--main-pink); color: white; }
+
+        /* 2단계: 입력 섹션 (처음엔 숨김) */
+        .input-section {
+            display: none;
             flex-direction: column;
             gap: 12px;
             margin-bottom: 30px;
+            padding: 15px;
+            background: #FFF;
+            border-radius: 15px;
+            border: 1px solid #EEE;
         }
         input, select {
             padding: 14px;
@@ -65,46 +93,20 @@
             font-size: 16px;
             background: #F9F9F9;
             outline: none;
-            transition: 0.3s;
         }
-        input:focus { border-color: var(--main-pink); background: white; }
 
-        .btn-group { display: flex; gap: 10px; }
-        button {
-            flex: 1;
+        .submit-btn {
             padding: 15px;
             border: none;
             border-radius: 15px;
             font-size: 16px;
             font-weight: 700;
+            background: #FF8585;
+            color: white;
             cursor: pointer;
-            transition: transform 0.1s;
         }
-        button:active { transform: scale(0.97); }
-        .btn-plus { background: var(--soft-blue); color: #0077A3; }
-        .btn-minus { background: var(--main-pink); color: white; }
 
-        /* 필터 및 통계 요약 */
-        .summary-mini {
-            display: flex;
-            justify-content: space-around;
-            background: #FFF;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-        .summary-item b { color: #FF8585; }
-
-        /* 리스트 내역 */
-        .history-title { font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .list-container {
-            max-height: 300px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        /* 리스트 내역 및 삭제 버튼 */
         .history-item {
             background: white;
             padding: 15px;
@@ -112,14 +114,26 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid #EEE;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .item-info { display: flex; flex-direction: column; }
-        .item-name { font-size: 16px; font-weight: 600; }
+        .item-info { flex: 1; }
+        .item-name { font-size: 16px; font-weight: 600; display: block; }
         .item-date { font-size: 12px; color: #BBB; }
-        .item-amount { font-weight: 700; font-size: 16px; }
-        .plus { border-left-color: var(--soft-blue); color: #2D9CDB; }
-        .minus { border-left-color: var(--main-pink); color: #EB5757; }
+        .item-amount-group { text-align: right; display: flex; align-items: center; gap: 10px; }
+        .delete-btn {
+            background: #FEE;
+            color: #FF8585;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .plus-text { color: #2D9CDB; font-weight: 700; }
+        .minus-text { color: #EB5757; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -131,115 +145,121 @@
     </header>
 
     <div class="balance-card">
-        <div class="balance-label">지금 쓸 수 있는 돈</div>
         <div class="balance-amount" id="total-balance">0원</div>
     </div>
 
-    <div class="summary-mini">
-        <div class="summary-item">받은 돈 <b id="total-in">0</b></div>
-        <div class="summary-item">쓴 돈 <b id="total-out">0</b></div>
+    <div class="type-selector">
+        <button class="type-btn plus" id="btn-in" onclick="selectType('in')">
+            <span>💰</span> 돈 받았다!
+        </button>
+        <button class="type-btn minus" id="btn-out" onclick="selectType('out')">
+            <span>💸</span> 돈 썼다!
+        </button>
     </div>
 
-    <div class="input-section">
-        <select id="category">
-            <option value="🍭">간식 사먹기</option>
-            <option value="🎁">장난감/선물</option>
-            <option value="📚">책/학용품</option>
-            <option value="💪">심부름/용돈</option>
-            <option value="✨">기타</option>
-        </select>
-        <input type="text" id="desc" placeholder="내용을 적어주세요">
-        <input type="number" id="amount" placeholder="금액 입력">
-        <div class="btn-group">
-            <button class="btn-plus" onclick="addRecord('in')">용돈 받기</button>
-            <button class="btn-minus" onclick="addRecord('out')">돈 쓰기</button>
-        </div>
+    <div class="input-section" id="input-area">
+        <select id="category"></select>
+        <input type="text" id="desc" placeholder="어디에 썼나요?">
+        <input type="number" id="amount" placeholder="얼마인가요?">
+        <button class="submit-btn" onclick="addRecord()">기록하기 ✨</button>
     </div>
 
-    <div class="history-title">
-        <span>최근 내역</span>
-        <span style="font-weight: 400; font-size: 12px; color: #999;" onclick="clearData()">전체삭제</span>
-    </div>
-    <div class="list-container" id="history-list">
-        </div>
+    <div style="font-weight: 700; margin-bottom: 15px;">최근 기록</div>
+    <div id="history-list"></div>
 </div>
 
 <script>
-    let balance = 0;
-    let totalIn = 0;
-    let totalOut = 0;
-    let records = JSON.parse(localStorage.getItem('yuju_money')) || [];
+    let currentType = '';
+    let records = JSON.parse(localStorage.getItem('yuju_money_v2')) || [];
 
-    // 초기화 및 오늘 날짜 표시
+    const categories = {
+        in: [['💪', '심부름/용돈'], ['🎁', '선물 받았어요'], ['✨', '기타']],
+        out: [['🍭', '간식'], ['🎁', '장난감'], ['📚', '문구/책'], ['✨', '기타']]
+    };
+
     window.onload = () => {
         const d = new Date();
         document.getElementById('today-date').innerText = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
         render();
     };
 
-    function addRecord(type) {
-        const category = document.getElementById('category').value;
-        const desc = document.getElementById('desc').value;
-        const amount = parseInt(document.getElementById('amount').value);
-
-        if (!desc || isNaN(amount)) return alert("내용과 금액을 써주세요!");
-
-        const newRecord = {
-            id: Date.now(),
-            type,
-            category,
-            desc,
-            amount,
-            date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-        };
-
-        records.unshift(newRecord);
-        localStorage.setItem('yuju_money', JSON.stringify(records));
+    function selectType(type) {
+        currentType = type;
+        document.getElementById('input-area').style.display = 'flex';
         
+        // 버튼 활성화 표시
+        document.getElementById('btn-in').classList.toggle('active', type === 'in');
+        document.getElementById('btn-out').classList.toggle('active', type === 'out');
+
+        // 카테고리 업데이트
+        const catSelect = document.getElementById('category');
+        catSelect.innerHTML = categories[type].map(c => `<option value="${c[0]}">${c[0]} ${c[1]}</option>`).join('');
+        
+        // 입력창 포커스
+        document.getElementById('desc').placeholder = type === 'in' ? "왜 받았나요?" : "어디에 썼나요?";
+    }
+
+    function addRecord() {
+        const cat = document.getElementById('category').value;
+        const desc = document.getElementById('desc').value;
+        const amt = parseInt(document.getElementById('amount').value);
+
+        if (!desc || isNaN(amt)) return alert("내용을 다 적어주세요!");
+
+        records.unshift({
+            id: Date.now(),
+            type: currentType,
+            cat, desc, amt,
+            date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        });
+
+        localStorage.setItem('yuju_money_v2', JSON.stringify(records));
+        resetInput();
+        render();
+    }
+
+    function resetInput() {
+        document.getElementById('input-area').style.display = 'none';
+        document.getElementById('btn-in').classList.remove('active');
+        document.getElementById('btn-out').classList.remove('active');
         document.getElementById('desc').value = '';
         document.getElementById('amount').value = '';
-        render();
+    }
+
+    function deleteRecord(id) {
+        if(confirm("이 기록을 지울까요?")) {
+            records = records.filter(r => r.id !== id);
+            localStorage.setItem('yuju_money_v2', JSON.stringify(records));
+            render();
+        }
     }
 
     function render() {
         const list = document.getElementById('history-list');
         list.innerHTML = '';
-        balance = 0; totalIn = 0; totalOut = 0;
+        let balance = 0;
 
         records.forEach(r => {
-            if(r.type === 'in') {
-                balance += r.amount;
-                totalIn += r.amount;
-            } else {
-                balance -= r.amount;
-                totalOut += r.amount;
-            }
-
+            balance += (r.type === 'in' ? r.amt : -r.amt);
             const div = document.createElement('div');
-            div.className = `history-item ${r.type === 'in' ? 'plus' : 'minus'}`;
+            div.className = 'history-item';
             div.innerHTML = `
                 <div class="item-info">
-                    <span class="item-name">${r.category} ${r.desc}</span>
+                    <span class="item-name">${r.cat} ${r.desc}</span>
                     <span class="item-date">${r.date}</span>
                 </div>
-                <div class="item-amount">${r.type === 'in' ? '+' : '-'}${r.amount.toLocaleString()}원</div>
+                <div class="item-amount-group">
+                    <span class="${r.type === 'in' ? 'plus-text' : 'minus-text'}">
+                        ${r.type === 'in' ? '+' : '-'}${r.amt.toLocaleString()}원
+                    </span>
+                    <button class="delete-btn" onclick="deleteRecord(${r.id})">✕</button>
+                </div>
             `;
             list.appendChild(div);
         });
 
         document.getElementById('total-balance').innerText = `${balance.toLocaleString()}원`;
-        document.getElementById('total-in').innerText = totalIn.toLocaleString();
-        document.getElementById('total-out').innerText = totalOut.toLocaleString();
-    }
-
-    function clearData() {
-        if(confirm("모든 기록을 지울까요?")) {
-            localStorage.removeItem('yuju_money');
-            records = [];
-            render();
-        }
     }
 </script>
-
 </body>
 </html>
