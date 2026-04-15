@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>유주의 반짝반짝 용돈기입장</title>
+    <title>유주의 용돈수첩</title>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -21,36 +21,41 @@
         
         /* 헤더 & 잔액 */
         header { text-align: center; margin-bottom: 20px; }
-        .balance-card { background: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; border: 2px solid var(--main-pink); }
-        .balance-amount { font-size: 28px; font-weight: 800; color: #FF8585; }
+        header h1 { font-size: 24px; color: #FF8585; margin: 0; letter-spacing: -1px; }
+        .balance-card { background: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; border: 2px solid var(--main-pink); box-shadow: 0 8px 15px rgba(255, 183, 178, 0.1); }
+        .balance-amount { font-size: 30px; font-weight: 800; color: #FF8585; margin-top: 5px; }
 
         /* 입력 폼 */
         .type-selector { display: flex; gap: 10px; margin-bottom: 15px; }
-        .type-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #EEE; background: white; cursor: pointer; font-weight: 700; }
-        .type-btn.active.plus { background: var(--soft-blue); border-color: var(--soft-blue); }
+        .type-btn { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #EEE; background: white; cursor: pointer; font-weight: 700; font-size: 16px; transition: 0.2s; }
+        .type-btn.active.plus { background: var(--soft-blue); border-color: var(--soft-blue); color: #0077A3; }
         .type-btn.active.minus { background: var(--main-pink); border-color: var(--main-pink); color: white; }
         
-        .input-group { display: flex; flex-direction: column; gap: 10px; background: #FFF; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
-        input, select { padding: 12px; border: 1px solid #EEE; border-radius: 10px; font-size: 15px; }
-        .submit-btn { padding: 15px; border: none; border-radius: 12px; background: #FF8585; color: white; font-weight: 700; cursor: pointer; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; background: #FFF; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #F0F0F0; }
+        input, select { padding: 12px; border: 1px solid #EEE; border-radius: 10px; font-size: 15px; outline: none; }
+        input:focus { border-color: var(--main-pink); }
+        .submit-btn { padding: 15px; border: none; border-radius: 12px; background: #FF8585; color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.1s; }
+        .submit-btn:active { transform: scale(0.98); }
 
         /* 내역 아이템 */
-        .history-item { background: white; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-left: 4px solid #EEE; }
-        .item-date { font-size: 11px; color: #999; margin-bottom: 3px; }
-        .item-name { font-weight: 600; font-size: 15px; }
-        .item-amount { font-weight: 700; }
-        .plus { border-left-color: var(--soft-blue); color: #2D9CDB; }
-        .minus { border-left-color: var(--main-pink); color: #EB5757; }
-        .del-btn { background: none; border: none; color: #CCC; margin-left: 10px; cursor: pointer; }
+        .history-item { background: white; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-left: 5px solid #EEE; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .item-date { font-size: 11px; color: #AAA; margin-bottom: 4px; }
+        .item-name { font-weight: 600; font-size: 16px; color: #444; }
+        .item-amount { font-weight: 700; font-size: 16px; }
+        .plus { border-left-color: var(--soft-blue); }
+        .plus .item-amount { color: #2D9CDB; }
+        .minus { border-left-color: var(--main-pink); }
+        .minus .item-amount { color: #EB5757; }
+        .del-btn { background: #F9F9F9; border: none; color: #CCC; margin-left: 12px; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 10px; }
 
         /* 통계 디자인 */
-        .stat-card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .stat-card { background: white; padding: 22px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #F0F0F0; }
         .stat-title { font-size: 14px; color: #888; margin-bottom: 10px; }
-        .stat-val { font-size: 20px; font-weight: 700; color: #444; }
+        .stat-val { font-size: 22px; font-weight: 800; color: #444; }
 
         /* 하단 탭 바 */
-        .nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: white; display: flex; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 10px; }
-        .nav-item { flex: 1; text-align: center; padding: 10px; color: #AAA; cursor: pointer; font-weight: 600; font-size: 14px; }
+        .nav-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 8px; border: 1px solid rgba(0,0,0,0.05); }
+        .nav-item { flex: 1; text-align: center; padding: 12px; color: #BBB; cursor: pointer; font-weight: 700; font-size: 15px; transition: 0.3s; }
         .nav-item.active { color: #FF8585; }
     </style>
 </head>
@@ -58,25 +63,26 @@
 
 <div class="app-container">
     <div id="tab-record" class="tab-content active">
-        <header><h1>💰 유주의 기입장</h1></header>
+        <header><h1>📖 유주의 용돈수첩</h1></header>
         <div class="balance-card">
-            <div style="font-size: 14px; color: #888;">지금 있는 돈</div>
+            <div style="font-size: 15px; color: #999; font-weight: 600;">지금 내 지갑에는</div>
             <div class="balance-amount" id="total-balance">0원</div>
         </div>
 
         <div class="type-selector">
-            <button class="type-btn" id="t-in" onclick="setType('in')">받았다 💰</button>
-            <button class="type-btn" id="t-out" onclick="setType('out')">썼다 💸</button>
+            <button class="type-btn" id="t-in" onclick="setType('in')">용돈 받기 💰</button>
+            <button class="type-btn" id="t-out" onclick="setType('out')">용돈 쓰기 💸</button>
         </div>
 
-        <div class="input-group">
+        <div class="input-group" id="input-area">
             <input type="date" id="date-input">
             <select id="category"></select>
-            <input type="text" id="desc" placeholder="내용 적기">
+            <input type="text" id="desc" placeholder="무엇을 했나요?">
             <input type="number" id="amount" placeholder="얼마인가요?">
-            <button class="submit-btn" onclick="addRecord()">기록하기</button>
+            <button class="submit-btn" onclick="addRecord()">수첩에 적기 ✨</button>
         </div>
 
+        <div style="font-weight: 700; margin: 20px 0 10px 5px; color: #666;">기록 목록</div>
         <div id="history-list"></div>
     </div>
 
@@ -91,27 +97,28 @@
             <div class="stat-val" id="month-out">0원</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">⭐ 이번 달 가장 많이 쓴 곳</div>
+            <div class="stat-title">⭐ 이번 달 최고 지출</div>
             <div class="stat-val" id="top-cat">-</div>
         </div>
     </div>
 </div>
 
 <div class="nav-bar">
-    <div class="nav-item active" onclick="showTab('record', this)">📝 기록</div>
-    <div class="nav-item" onclick="showTab('stat', this)">📊 통계</div>
+    <div class="nav-item active" onclick="showTab('record', this)">📝 기록하기</div>
+    <div class="nav-item" onclick="showTab('stat', this)">📈 모아보기</div>
 </div>
 
 <script>
     let currentType = 'out';
     let records = JSON.parse(localStorage.getItem('yuju_v3')) || [];
     const categories = {
-        in: [['💪','심부름/용돈'], ['🎁','선물'], ['✨','기타']],
-        out: [['🍭','간식'], ['🎁','장난감'], ['📚','문구/책'], ['🚌','교통비'], ['✨','기타']]
+        in: [['💪','심부름/용돈'], ['🎁','선물 받았어요'], ['✨','기타']],
+        out: [['🍭','맛있는 간식'], ['🎁','장난감/선물'], ['📚','학용품/책'], ['🚌','버스/지하철'], ['✨','기타']]
     };
 
     window.onload = () => {
-        document.getElementById('date-input').value = new Date().toISOString().substring(0, 10);
+        const today = new Date().toISOString().substring(0, 10);
+        document.getElementById('date-input').value = today;
         setType('out');
         render();
     };
@@ -136,7 +143,7 @@
         const date = document.getElementById('date-input').value;
         const desc = document.getElementById('desc').value;
         const amt = parseInt(document.getElementById('amount').value);
-        if(!desc || isNaN(amt)) return alert("내용을 입력해줘!");
+        if(!desc || isNaN(amt)) return alert("수첩에 적을 내용을 다 입력해줘!");
 
         records.unshift({ id: Date.now(), date, type: currentType, cat: document.getElementById('category').value, desc, amt });
         localStorage.setItem('yuju_v3', JSON.stringify(records));
@@ -146,7 +153,7 @@
     }
 
     function deleteRecord(id) {
-        if(confirm("지울까?")) {
+        if(confirm("이 기록을 수첩에서 지울까?")) {
             records = records.filter(r => r.id !== id);
             localStorage.setItem('yuju_v3', JSON.stringify(records));
             render();
@@ -158,7 +165,6 @@
         list.innerHTML = '';
         let balance = 0;
         
-        // 날짜순 정렬
         records.sort((a,b) => new Date(b.date) - new Date(a.date));
 
         records.forEach(r => {
@@ -171,7 +177,7 @@
                     <div class="item-name">${r.cat} ${r.desc}</div>
                 </div>
                 <div style="display:flex; align-items:center">
-                    <span class="item-amount">${r.type==='in'?'+':'-'}${r.amt.toLocaleString()}</span>
+                    <span class="item-amount">${r.type==='in'?'+':'-'}${r.amt.toLocaleString()}원</span>
                     <button class="del-btn" onclick="deleteRecord(${r.id})">✕</button>
                 </div>
             `;
@@ -182,7 +188,9 @@
 
     function updateStats() {
         const now = new Date();
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        // 이번 주 시작일 (일요일)
+        const day = now.getDay();
+        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
         let weekOut = 0, monthOut = 0, catCount = {};
@@ -200,7 +208,7 @@
         document.getElementById('month-out').innerText = monthOut.toLocaleString() + '원';
         
         const top = Object.entries(catCount).sort((a,b) => b[1] - a[1])[0];
-        document.getElementById('top-cat').innerText = top ? `${top[0]} (${top[1].toLocaleString()}원)` : '-';
+        document.getElementById('top-cat').innerText = top ? `${top[0]} (${top[1].toLocaleString()}원)` : '아직 기록이 없어요';
     }
 </script>
 </body>
