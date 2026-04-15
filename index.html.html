@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반짝반짝 용돈기입장</title>
+    <style>
+        :root { --main-color: #FFB7B2; --bg-color: #FFF9F9; }
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: var(--bg-color); display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); padding: 25px; border: 3px solid var(--main-color); }
+        h2 { text-align: center; color: #FF8585; margin-bottom: 20px; }
+        .balance-card { background: var(--main-color); color: white; padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px; }
+        .balance-amount { font-size: 24px; font-weight: bold; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        input, select { padding: 12px; border: 2px solid #EEE; border-radius: 10px; outline: none; }
+        .btn-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-plus { background: #B2E2F2; color: #0077A3; }
+        .btn-minus { background: #FFD1DC; color: #A3002E; }
+        .history-list { border-top: 2px dashed #FFB7B2; padding-top: 15px; }
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #F0F0F0; font-size: 14px; }
+        .amount-plus { color: #2D9CDB; font-weight: bold; }
+        .amount-minus { color: #EB5757; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>💰 내 용돈기입장</h2>
+        <div class="balance-card">
+            <div>남은 용돈</div>
+            <div class="balance-amount" id="total-balance">0원</div>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="desc" placeholder="무엇을 했나요? (예: 심부름, 아이스크림)">
+            <input type="number" id="amount" placeholder="얼마인가요?">
+            <div class="btn-group">
+                <button class="btn-plus" onclick="addHistory('plus')">용돈 받았어요!</button>
+                <button class="btn-minus" onclick="addHistory('minus')">돈을 썼어요!</button>
+            </div>
+        </div>
+
+        <div class="history-list" id="history">
+            </div>
+    </div>
+
+    <script>
+        let balance = 0;
+
+        function addHistory(type) {
+            const desc = document.getElementById('desc').value;
+            const amountInput = document.getElementById('amount').value;
+            const amount = parseInt(amountInput);
+
+            if (!desc || isNaN(amount)) {
+                alert("내용과 금액을 정확히 적어주세요!");
+                return;
+            }
+
+            const historyDiv = document.getElementById('history');
+            const item = document.createElement('div');
+            item.className = 'item';
+            
+            if (type === 'plus') {
+                balance += amount;
+                item.innerHTML = `<span>${desc}</span><span class="amount-plus">+${amount.toLocaleString()}원</span>`;
+            } else {
+                balance -= amount;
+                item.innerHTML = `<span>${desc}</span><span class="amount-minus">-${amount.toLocaleString()}원</span>`;
+            }
+
+            historyDiv.prepend(item);
+            document.getElementById('total-balance').innerText = `${balance.toLocaleString()}원`;
+            
+            // 입력창 초기화
+            document.getElementById('desc').value = '';
+            document.getElementById('amount').value = '';
+        }
+    </script>
+</body>
+</html>
